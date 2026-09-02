@@ -19,7 +19,7 @@ import { StudentSession } from '@/lib/types';
 
 interface HeaderProps {
   session: StudentSession;
-  onLogin: (username: string, grade: string) => void;
+  onOpenAuthModal: (mode: 'login' | 'register') => void;
   onLogout: () => void;
   activeLevel: 1 | 2 | 3;
   onSelectLevel: (level: 1 | 2 | 3) => void;
@@ -30,7 +30,7 @@ interface HeaderProps {
 
 export default function Header({
   session,
-  onLogin,
+  onOpenAuthModal,
   onLogout,
   activeLevel,
   onSelectLevel,
@@ -38,21 +38,6 @@ export default function Header({
   onOpenReport,
   onOpenChat,
 }: HeaderProps) {
-  const [inputName, setInputName] = useState('');
-  const selectedGrade = '5. Sınıf';
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputName.trim()) {
-      setErrorMsg('Lütfen öğrenci adınızı giriniz.');
-      return;
-    }
-    setErrorMsg('');
-    onLogin(inputName.trim(), selectedGrade);
-    setInputName('');
-  };
-
   const completedCount = session.completedTasks.length;
 
   return (
@@ -127,61 +112,41 @@ export default function Header({
             </div>
           </div>
 
-          {/* User Session & Login Area */}
-          <div className="flex items-center gap-3">
+          {/* User Session & Login/Register Area */}
+          <div className="flex items-center gap-2.5">
             {!session.isLoggedIn ? (
-              /* LOGGED OUT: Username Input and Login Button */
-              <form 
-                onSubmit={handleLoginSubmit} 
-                className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto"
-              >
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs bg-[#FEF3C7] border-2 border-[#FDE68A] text-[#78350F] font-bold rounded-xl px-3 py-1.5 shrink-0 flex items-center gap-1.5 shadow-2xs">
-                      <GraduationCap className="w-3.5 h-3.5 text-[#B45309]" />
-                      5. Sınıf
-                    </span>
+              /* LOGGED OUT: Giriş Yap and Kayıt Ol buttons */
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => onOpenAuthModal('login')}
+                  className="px-4 py-2 border-2 border-[#B45309] text-[#9A3412] hover:bg-[#FEF3C7] font-bold rounded-xl text-xs sm:text-sm transition-all shadow-2xs active:scale-95 cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Giriş Yap</span>
+                </button>
 
-                    <input
-                      id="student-username-input"
-                      type="text"
-                      placeholder="Öğrenci Adı..."
-                      value={inputName}
-                      onChange={(e) => {
-                        setInputName(e.target.value);
-                        if (errorMsg) setErrorMsg('');
-                      }}
-                      className="text-sm px-3.5 py-1.5 border-2 border-[#E6DCB8] rounded-xl outline-none focus:border-[#B45309] transition-colors text-stone-800 placeholder-stone-400 w-40 sm:w-48 bg-white shadow-2xs"
-                    />
-
-                    <button
-                      type="submit"
-                      id="login-button"
-                      className="px-5 py-1.5 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white font-bold rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer inline-flex items-center gap-1.5 border border-amber-600/30"
-                    >
-                      <LogIn className="w-4 h-4" />
-                      <span>Giriş Yap</span>
-                    </button>
-                  </div>
-                  {errorMsg && (
-                    <span className="text-[11px] text-rose-700 mt-1 font-bold">
-                      {errorMsg}
-                    </span>
-                  )}
-                </div>
-              </form>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuthModal('register')}
+                  className="px-4 py-2 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer inline-flex items-center gap-1.5 border border-amber-600/30"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-200" />
+                  <span>Kayıt Ol</span>
+                </button>
+              </div>
             ) : (
               /* LOGGED IN: Welcome Banner, Progress, Logout Button */
               <div className="flex items-center gap-3 sm:gap-4 bg-[#FFFBEB] border-2 border-[#FDE68A] rounded-2xl px-4 py-2 shadow-2xs">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C291E] to-[#B45309] text-amber-100 flex items-center justify-center font-black text-sm shadow-xs shrink-0 border border-amber-300/40">
-                  {session.username.charAt(0).toUpperCase()}
+                  {(session.fullName || session.username || 'Ö').charAt(0).toUpperCase()}
                 </div>
                 
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs text-stone-500 font-medium">Hoş geldin,</span>
                     <span className="text-sm font-black text-[#78350F]">
-                      {session.username}
+                      {session.fullName || session.username}
                     </span>
                     <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] font-bold px-2 py-0.5 rounded-full border border-amber-300">
                       {session.grade}

@@ -1,5 +1,7 @@
 export interface StudentSession {
+  userId?: string;
   username: string;
+  fullName?: string;
   grade: string;
   schoolName?: string;
   isLoggedIn: boolean;

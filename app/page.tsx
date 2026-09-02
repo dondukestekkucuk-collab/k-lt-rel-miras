@@ -8,6 +8,7 @@ import Level3Advanced from '@/components/Level3Advanced';
 import GlossaryModal from '@/components/GlossaryModal';
 import OralHistoryReportModal from '@/components/OralHistoryReportModal';
 import Chat from '@/components/Chat';
+import AuthModal from '@/components/AuthModal';
 import TeacherGuidanceBanner from '@/components/TeacherGuidanceBanner';
 import { StudentSession } from '@/lib/types';
 import { 
@@ -28,6 +29,7 @@ const STORAGE_KEY = 'sosyal_bilgiler_ogrenci_oturum_v1';
 
 const defaultSession: StudentSession = {
   username: '',
+  fullName: '',
   grade: '5. Sınıf',
   isLoggedIn: false,
   loginTime: '',
@@ -55,34 +57,30 @@ export default function HomePage() {
   const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
-  // Save to local storage on state change
+  // Save to local storage on state change and sync to PostgreSQL
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
     } catch (e) {
       console.error('Failed to save session:', e);
     }
+
+    // Database sync
+    if (session.isLoggedIn && session.userId) {
+      fetch('/api/auth/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session }),
+      }).catch(err => console.error('Database auto-sync error:', err));
+    }
   }, [session]);
 
-  // Login handler
-  const handleLogin = (username: string, grade: string) => {
-    const updated: StudentSession = {
-      ...session,
-      username,
-      grade,
-      isLoggedIn: true,
-      loginTime: new Date().toISOString(),
-    };
-    setSession(updated);
-
-    try {
-      confetti({
-        particleCount: 50,
-        spread: 80,
-        origin: { y: 0.2 }
-      });
-    } catch {}
+  const handleOpenAuth = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
   };
 
   // Logout handler
@@ -164,7 +162,7 @@ export default function HomePage() {
       {/* Header with Student Login & Level Navigation */}
       <Header
         session={session}
-        onLogin={handleLogin}
+        onOpenAuthModal={handleOpenAuth}
         onLogout={handleLogout}
         activeLevel={activeLevel}
         onSelectLevel={setActiveLevel}
@@ -218,7 +216,7 @@ export default function HomePage() {
               </div>
               <div>
                 <h4 className="font-black text-base sm:text-lg text-[#451A03]">
-                  {session.username}, İstasyon Çalışman Harika İlerliyor!
+                  {session.fullName || session.username}, İstasyon Çalışman Harika İlerliyor!
                 </h4>
                 <p className="text-xs sm:text-sm text-stone-600 font-medium">
                   Toplam {session.completedTasks.length} adet görev ve test tamamladın. Çalışmanı resmi bir dosya ve sertifika olarak görüntüleyebilirsin.
@@ -275,6 +273,15 @@ export default function HomePage() {
       </footer>
 
       {/* Modals */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialMode={authMode}
+        onAuthSuccess={(newSession) => {
+          setSession(newSession);
+        }}
+      />
+
       <GlossaryModal
         isOpen={isGlossaryOpen}
         onClose={() => setIsGlossaryOpen(false)}
