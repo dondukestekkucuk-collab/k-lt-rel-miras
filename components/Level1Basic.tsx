@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { LEVEL_1_QUESTIONS } from '@/lib/learningData';
 import { StudentSession } from '@/lib/types';
+import { sounds } from '@/lib/audio';
 import confetti from 'canvas-confetti';
 
 interface Level1BasicProps {
@@ -44,10 +45,12 @@ export default function Level1Basic({
   const [task3Answer, setTask3Answer] = useState(session.oralHistoryAnswers['l1-task3'] || '');
 
   const handleSaveTask = (taskId: string, text: string) => {
+    sounds.playClick();
     onUpdateTaskAnswer(taskId, text);
     if (text.trim().length > 2) {
       if (!session.completedTasks.includes(taskId)) {
         onToggleTaskComplete(taskId);
+        sounds.playSuccess();
         try {
           confetti({
             particleCount: 35,
@@ -55,12 +58,15 @@ export default function Level1Basic({
             origin: { y: 0.8 }
           });
         } catch {}
+      } else {
+        sounds.playClick();
       }
     }
   };
 
   const handleSelectQuizOption = (questionId: string, optionIdx: number) => {
     if (submittedQuiz[questionId]) return;
+    sounds.playClick();
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionIdx }));
   };
 
@@ -75,6 +81,7 @@ export default function Level1Basic({
     onAnswerQuiz(questionId, isCorrect);
     
     if (isCorrect) {
+      sounds.playSuccess();
       try {
         confetti({
           particleCount: 40,
@@ -82,6 +89,8 @@ export default function Level1Basic({
           origin: { y: 0.7 }
         });
       } catch {}
+    } else {
+      sounds.playClick();
     }
   };
 

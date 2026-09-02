@@ -1,13 +1,22 @@
 'use client';
 
-import React from 'react';
-import { Lightbulb, BookCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lightbulb, BookCheck, Volume2, Square } from 'lucide-react';
+import { SpeechReader, sounds } from '@/lib/audio';
 
 interface TeacherGuidanceBannerProps {
   activeLevel: 1 | 2 | 3;
 }
 
 export default function TeacherGuidanceBanner({ activeLevel }: TeacherGuidanceBannerProps) {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Stop speech when active level changes
+  useEffect(() => {
+    SpeechReader.stop();
+    setIsSpeaking(false);
+  }, [activeLevel]);
+
   const getLevelInfo = () => {
     switch (activeLevel) {
       case 1:
@@ -45,6 +54,22 @@ export default function TeacherGuidanceBanner({ activeLevel }: TeacherGuidanceBa
 
   const info = getLevelInfo();
 
+  const handleToggleRead = () => {
+    if (isSpeaking) {
+      SpeechReader.stop();
+      setIsSpeaking(false);
+    } else {
+      sounds.playClick();
+      setIsSpeaking(true);
+      const textToRead = `${info.title}. ${info.description}. Hedef Maarif Kazanımları: ${info.outcomes.join('. ')}`;
+      SpeechReader.speak(
+        textToRead,
+        () => setIsSpeaking(false),
+        () => setIsSpeaking(false)
+      );
+    }
+  };
+
   return (
     <div className={`rounded-3xl p-5 sm:p-6 border-2 ${info.bgColor} ${info.borderColor} shadow-sm`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -53,10 +78,34 @@ export default function TeacherGuidanceBanner({ activeLevel }: TeacherGuidanceBa
           <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 mt-0.5 shadow-md ${info.badgeBg}`}>
             <Lightbulb className="w-5 h-5" />
           </div>
-          <div>
-            <h4 className="text-sm sm:text-base font-black text-stone-900 mb-1 tracking-tight">
-              {info.title}
-            </h4>
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h4 className="text-sm sm:text-base font-black text-stone-900 tracking-tight">
+                {info.title}
+              </h4>
+              <button
+                type="button"
+                onClick={handleToggleRead}
+                className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer shadow-2xs border ${
+                  isSpeaking
+                    ? 'bg-amber-300 text-[#741D15] border-amber-400 animate-pulse'
+                    : 'bg-white text-stone-700 hover:text-stone-900 border-stone-200 hover:bg-stone-50'
+                }`}
+                title={isSpeaking ? 'Sesli Okumayı Durdur' : 'Öğretmen Notunu Sesli Dinle'}
+              >
+                {isSpeaking ? (
+                  <>
+                    <Square className="w-3 h-3 text-[#741D15] fill-[#741D15]" />
+                    <span>Durdur</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-3 h-3 text-[#B45309]" />
+                    <span>Sesli Dinle</span>
+                  </>
+                )}
+              </button>
+            </div>
             <p className="text-xs sm:text-sm text-stone-700 leading-relaxed max-w-3xl font-medium">
               {info.description}
             </p>

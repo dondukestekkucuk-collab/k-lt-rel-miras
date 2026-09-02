@@ -10,9 +10,13 @@ import {
   X, 
   Copy, 
   Check, 
-  GraduationCap
+  GraduationCap,
+  Volume2,
+  VolumeX,
+  Square
 } from 'lucide-react';
 import { StudentSession } from '@/lib/types';
+import { SpeechReader, sounds } from '@/lib/audio';
 
 interface Message {
   id: string;
@@ -39,17 +43,26 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
     {
       id: 'welcome-init',
       sender: 'assistant',
-      text: `Merhaba ${session.username || 'sevgili öğrencim'}! 👋 Ben senin Sosyal Bilgiler Yapay Zekâ Öğretmenin.\n\nKültürel mirasımız, somut ve somut olmayan değerlerimiz, sözlü tarih adımları veya dersimizle ilgili merak ettiğin her konuyu bana sorabilirsin. Sana nasıl yardımcı olabilirim?\n\n🎯 **Öğretmenin Mini Başlangıç Görevi:**\n1. Yaşadığın çevrede gördüğün en eski tarihi yapının adını biliyor musun?\n2. Ailende geçmişten günümüze aktarılan özel bir gelenek veya eşya var mı?`,
+      text: `Merhaba ${session.fullName || session.username || 'sevgili öğrencim'}! 👋 Ben senin Sosyal Bilgiler Yapay Zekâ Öğretmenin.\n\nKültürel mirasımız, somut ve somut olmayan değerlerimiz, sözlü tarih adımları veya dersimizle ilgili merak ettiğin her konuyu bana sorabilirsin. Sana nasıl yardımcı olabilirim?\n\n🎯 **Öğretmenin Mini Başlangıç Görevi:**\n1. Yaşadığın çevrede gördüğün en eski tarihi yapının adını biliyor musun?\n2. Ailende geçmişten günümüze aktarılan özel bir gelenek veya eşya var mı?`,
       timestamp: 'Şimdi'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const messageCounter = useRef(1);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Stop speech when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      SpeechReader.stop();
+      setSpeakingMsgId(null);
+    }
+  }, [isOpen]);
 
   // Auto-scroll on new message
   useEffect(() => {
@@ -67,10 +80,26 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
     }
   }, [isOpen]);
 
+  const handleToggleSpeech = (msgId: string, text: string) => {
+    if (speakingMsgId === msgId) {
+      SpeechReader.stop();
+      setSpeakingMsgId(null);
+    } else {
+      sounds.playClick();
+      setSpeakingMsgId(msgId);
+      SpeechReader.speak(
+        text,
+        () => setSpeakingMsgId(null),
+        () => setSpeakingMsgId(null)
+      );
+    }
+  };
+
   const handleSendMessage = async (customText?: string) => {
     const textToSend = customText || inputValue;
     if (!textToSend.trim() || isLoading) return;
 
+    sounds.playClick();
     messageCounter.current += 1;
     const currentCount = messageCounter.current;
     const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -87,8 +116,6 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
     setIsLoading(true);
 
     try {
-      // Direct POST request to internal server-side Next.js API route
-      // No AI libraries are imported on the frontend
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -97,7 +124,7 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
         body: JSON.stringify({
           message: textToSend.trim(),
           history: messages.map(m => ({ sender: m.sender, text: m.text })),
-          studentName: session.username,
+          studentName: session.fullName || session.username,
           gradeLevel: session.grade,
         }),
       });
@@ -108,6 +135,7 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
         throw new Error(data.error || 'Sunucudan yanıt alınamadı.');
       }
 
+      sounds.playSuccess();
       messageCounter.current += 1;
       const assistantMsg: Message = {
         id: `assistant-msg-${messageCounter.current}`,
@@ -244,18 +272,44 @@ export default function Chat({ isOpen, onClose, session }: ChatProps) {
                       {msg.timestamp}
                     </span>
                     {isAssistant && (
-                      <button
-                        onClick={() => handleCopy(msg.id, msg.text)}
-                        className="text-stone-400 hover:text-stone-700 transition-colors p-0.5 rounded cursor-pointer text-[11px] flex items-center gap-0.5"
-                        title="Metni Kopyala"
-                      >
-                        {copiedId === msg.id ? (
-                          <Check className="w-3 h-3 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                        <span className="text-[10px]">{copiedId === msg.id ? 'Kopyalandı' : 'Kopyala'}</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {/* Listen Voice Button */}
+                        <button
+                          onClick={() => handleToggleSpeech(msg.id, msg.text)}
+                          className={`p-1 rounded-md cursor-pointer text-[11px] flex items-center gap-1 transition-colors ${
+                            speakingMsgId === msg.id
+                              ? 'bg-amber-200 text-[#741D15] font-bold animate-pulse'
+                              : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/60'
+                          }`}
+                          title={speakingMsgId === msg.id ? 'Okumayı Durdur' : 'Sesli Dinle'}
+                        >
+                          {speakingMsgId === msg.id ? (
+                            <>
+                              <Square className="w-3 h-3 text-[#741D15] fill-[#741D15]" />
+                              <span>Durdur</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-3.5 h-3.5 text-[#B45309]" />
+                              <span>Sesli Dinle</span>
+                            </>
+                          )}
+                        </button>
+
+                        {/* Copy Button */}
+                        <button
+                          onClick={() => handleCopy(msg.id, msg.text)}
+                          className="text-stone-400 hover:text-stone-700 transition-colors p-0.5 rounded cursor-pointer text-[11px] flex items-center gap-0.5"
+                          title="Metni Kopyala"
+                        >
+                          {copiedId === msg.id ? (
+                            <Check className="w-3 h-3 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                          <span className="text-[10px]">{copiedId === msg.id ? 'Kopyalandı' : 'Kopyala'}</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

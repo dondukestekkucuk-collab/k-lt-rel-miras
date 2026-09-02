@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Search, 
@@ -11,9 +11,12 @@ import {
   HeartHandshake, 
   Scroll, 
   Landmark,
-  Lightbulb
+  Lightbulb,
+  Volume2,
+  Square
 } from 'lucide-react';
 import { GLOSSARY_TERMS } from '@/lib/learningData';
+import { SpeechReader, sounds } from '@/lib/audio';
 
 interface GlossaryModalProps {
   isOpen: boolean;
@@ -23,8 +26,33 @@ interface GlossaryModalProps {
 export default function GlossaryModal({ isOpen, onClose }: GlossaryModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Hepsi');
+  const [speakingTerm, setSpeakingTerm] = useState<string | null>(null);
+
+  // Stop speech on close
+  useEffect(() => {
+    if (!isOpen) {
+      SpeechReader.stop();
+      setSpeakingTerm(null);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleToggleTermSpeech = (term: string, definition: string, example: string) => {
+    if (speakingTerm === term) {
+      SpeechReader.stop();
+      setSpeakingTerm(null);
+    } else {
+      sounds.playClick();
+      setSpeakingTerm(term);
+      const textToRead = `${term}. Tanımı: ${definition}. Günlük hayattan örnek: ${example}`;
+      SpeechReader.speak(
+        textToRead,
+        () => setSpeakingTerm(null),
+        () => setSpeakingTerm(null)
+      );
+    }
+  };
 
   const categories = ['Hepsi', 'Somut Miras', 'Somut Olmayan Miras', 'Yöntem ve Bilim'];
 
@@ -126,6 +154,28 @@ export default function GlossaryModal({ isOpen, onClose }: GlossaryModalProps) {
                     <h4 className="font-bold text-[#451A03] text-sm sm:text-base">
                       {item.term}
                     </h4>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTermSpeech(item.term, item.simpleDefinition, item.example)}
+                      className={`p-1 rounded-md text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1 ${
+                        speakingTerm === item.term
+                          ? 'bg-amber-300 text-[#741D15] animate-pulse font-bold'
+                          : 'text-stone-400 hover:text-stone-800 hover:bg-stone-100'
+                      }`}
+                      title={speakingTerm === item.term ? 'Okumayı Durdur' : 'Kavramı Sesli Dinle'}
+                    >
+                      {speakingTerm === item.term ? (
+                        <>
+                          <Square className="w-3 h-3 text-[#741D15] fill-[#741D15]" />
+                          <span className="text-[10px]">Durdur</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3.5 h-3.5 text-[#B45309]" />
+                          <span className="text-[10px] hidden sm:inline">Dinle</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                   <span className="text-[10px] font-bold bg-[#FEF3C7] text-[#78350F] px-2.5 py-0.5 rounded-full border border-amber-300">
                     {item.category}

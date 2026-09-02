@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { LEVEL_3_QUESTIONS } from '@/lib/learningData';
 import { StudentSession } from '@/lib/types';
+import { sounds } from '@/lib/audio';
 import confetti from 'canvas-confetti';
 
 interface Level3AdvancedProps {
@@ -49,10 +50,12 @@ export default function Level3Advanced({
   const [project3, setProject3] = useState(session.projectAnswers['l3-p3'] || '');
 
   const handleSaveProject = (projectId: string, text: string) => {
+    sounds.playClick();
     onUpdateProjectAnswer(projectId, text);
     if (text.trim().length > 10) {
       if (!session.completedTasks.includes(projectId)) {
         onToggleTaskComplete(projectId);
+        sounds.playSuccess();
         try {
           confetti({
             particleCount: 45,
@@ -60,12 +63,15 @@ export default function Level3Advanced({
             origin: { y: 0.75 }
           });
         } catch {}
+      } else {
+        sounds.playClick();
       }
     }
   };
 
   const handleSelectQuizOption = (questionId: string, optionIdx: number) => {
     if (submittedQuiz[questionId]) return;
+    sounds.playClick();
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionIdx }));
   };
 
@@ -80,6 +86,7 @@ export default function Level3Advanced({
     onAnswerQuiz(questionId, isCorrect);
     
     if (isCorrect) {
+      sounds.playSuccess();
       try {
         confetti({
           particleCount: 50,
@@ -87,6 +94,8 @@ export default function Level3Advanced({
           origin: { y: 0.7 }
         });
       } catch {}
+    } else {
+      sounds.playClick();
     }
   };
 

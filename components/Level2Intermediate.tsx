@@ -1,23 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
-  BookOpen, 
-  Mic, 
-  HeartHandshake, 
+  Users, 
+  Sparkles, 
   CheckCircle2, 
   HelpCircle, 
-  Sparkles, 
-  Users, 
-  Info, 
+  Mic, 
+  MicOff,
+  Square,
+  Play,
+  Trash2,
+  Volume2,
+  BookOpen, 
+  FileText, 
+  Calendar, 
+  Award, 
   Printer, 
-  Save, 
-  History,
-  FileSpreadsheet,
-  FileText
+  ChevronRight,
+  Info,
+  Save
 } from 'lucide-react';
 import { LEVEL_2_QUESTIONS } from '@/lib/learningData';
 import { StudentSession } from '@/lib/types';
+import { sounds } from '@/lib/audio';
 import confetti from 'canvas-confetti';
 
 interface Level2IntermediateProps {
@@ -52,8 +58,73 @@ export default function Level2Intermediate({
 
   const [savedSuccessMsg, setSavedSuccessMsg] = useState('');
 
+  // Audio Recording State
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioUrl]);
+
+  const startRecording = async () => {
+    try {
+      sounds.playClick();
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const url = URL.createObjectURL(audioBlob);
+        setAudioUrl(url);
+        sounds.playSuccess();
+        stream.getTracks().forEach(t => t.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingSeconds(0);
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
+    } catch {
+      alert('Mikrofona erişilemedi. Lütfen tarayıcınızdan mikrofon izni veriniz.');
+    }
+  };
+
+  const stopRecording = () => {
+    sounds.playClick();
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+  };
+
+  const deleteRecording = () => {
+    sounds.playClick();
+    if (audioUrl) {
+      URL.revokeObjectURL(audioUrl);
+      setAudioUrl(null);
+    }
+    setRecordingSeconds(0);
+  };
+
   const handleSaveInterview = (e: React.FormEvent) => {
     e.preventDefault();
+    sounds.playClick();
     onUpdateOralHistory('interviewee_name', intervieweeName);
     onUpdateOralHistory('interviewee_age', intervieweeAge);
     onUpdateOralHistory('interviewee_relation', intervieweeRelation);
@@ -63,10 +134,11 @@ export default function Level2Intermediate({
     onUpdateOralHistory('l2-q4', q4);
     onUpdateOralHistory('l2-q5', q5);
 
-    // Check if at least 3 questions answered
+    // Check if at least 2 questions answered
     const answeredCount = [q1, q2, q3, q4, q5].filter(ans => ans.trim().length > 3).length;
     if (answeredCount >= 2 && !session.completedTasks.includes('l2-oral-history')) {
       onToggleTaskComplete('l2-oral-history');
+      sounds.playCelebration();
       try {
         confetti({
           particleCount: 50,
@@ -74,6 +146,8 @@ export default function Level2Intermediate({
           origin: { y: 0.75 }
         });
       } catch {}
+    } else {
+      sounds.playSuccess();
     }
 
     setSavedSuccessMsg('Sözlü tarih çalışmanız başarıyla kaydedildi! Raporunuzu görüntüleyebilirsiniz.');
@@ -82,6 +156,7 @@ export default function Level2Intermediate({
 
   const handleSelectQuizOption = (questionId: string, optionIdx: number) => {
     if (submittedQuiz[questionId]) return;
+    sounds.playClick();
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionIdx }));
   };
 
@@ -96,6 +171,7 @@ export default function Level2Intermediate({
     onAnswerQuiz(questionId, isCorrect);
     
     if (isCorrect) {
+      sounds.playSuccess();
       try {
         confetti({
           particleCount: 40,
@@ -103,6 +179,8 @@ export default function Level2Intermediate({
           origin: { y: 0.7 }
         });
       } catch {}
+    } else {
+      sounds.playClick();
     }
   };
 
@@ -263,10 +341,70 @@ export default function Level2Intermediate({
           </div>
 
           {/* Info Box */}
-          <div className="bg-sky-50/70 border-2 border-sky-100 rounded-xl p-4 text-xs text-sky-950 leading-relaxed flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+          <div className="bg-amber-50/70 border-2 border-amber-200/80 rounded-xl p-4 text-xs text-amber-950 leading-relaxed flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <div>
-              <strong>Sözlü Tarih İpuçları:</strong> Görüşmeye başlamadan önce büyüğünden izin al, nazik ve sabırlı bir dil kullan. Konuşurken sözünü kesme, verdiği cevapların kilit noktalarını aşağıdaki soru kutularına not et.
+              <strong>Sözlü Tarih İpuçları:</strong> Görüşmeye başlamadan önce büyüğünden izin al, nazik ve sabırlı bir dil kullan. Dilersen aşağıdaki ses kayıt aracını kullanarak konuşmayı kaydedebilir, daha sonra tekrar dinleyerek not alabilirsin.
+            </div>
+          </div>
+
+          {/* Interactive Voice Recorder Widget */}
+          <div className="bg-[#FAF7F2] border-2 border-[#E6DCB8] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-colors ${
+                isRecording ? 'bg-rose-500 text-white animate-ping' : 'bg-[#FEF3C7] text-[#9A3412] border border-amber-300'
+              }`}>
+                <Mic className="w-5 h-5" />
+              </div>
+              <div>
+                <h5 className="font-bold text-xs sm:text-sm text-stone-800 flex items-center gap-1.5">
+                  <span>Sözlü Tarih Ses Kaydedici</span>
+                  {isRecording && (
+                    <span className="text-xs text-rose-600 font-black animate-pulse">
+                      • Kaydediliyor ({recordingSeconds}s)
+                    </span>
+                  )}
+                </h5>
+                <p className="text-[11px] text-stone-500">
+                  {audioUrl ? 'Ses kaydı hazır, dinleyebilirsiniz.' : 'Görüşmeyi doğrudan mikrofonunuzla kaydedin.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {!isRecording ? (
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                  <span>{audioUrl ? 'Yeniden Kaydet' : 'Kaydı Başlat'}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={stopRecording}
+                  className="px-3.5 py-1.5 bg-stone-800 hover:bg-black text-white font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-xs cursor-pointer animate-bounce"
+                >
+                  <Square className="w-3.5 h-3.5 fill-white" />
+                  <span>Kaydı Bitir</span>
+                </button>
+              )}
+
+              {audioUrl && (
+                <>
+                  <audio controls src={audioUrl} className="h-8 max-w-[180px] sm:max-w-[200px]" />
+                  <button
+                    type="button"
+                    onClick={deleteRecording}
+                    className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+                    title="Kaydı Sil"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 

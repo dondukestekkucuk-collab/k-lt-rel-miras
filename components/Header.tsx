@@ -13,9 +13,12 @@ import {
   Layers,
   Compass,
   MessageSquareQuote,
-  Bot
+  Bot,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { StudentSession } from '@/lib/types';
+import { sounds } from '@/lib/audio';
 
 interface HeaderProps {
   session: StudentSession;
@@ -38,7 +41,19 @@ export default function Header({
   onOpenReport,
   onOpenChat,
 }: HeaderProps) {
+  const [isSoundOn, setIsSoundOn] = useState(sounds.isSoundEnabled());
   const completedCount = session.completedTasks.length;
+
+  const handleToggleSound = () => {
+    const newState = sounds.toggleSound();
+    setIsSoundOn(newState);
+    if (newState) sounds.playClick();
+  };
+
+  const handleLevelClick = (lvl: 1 | 2 | 3) => {
+    sounds.playStationSwitch();
+    onSelectLevel(lvl);
+  };
 
   return (
     <header className="bg-[#FAF7F2] border-b-2 border-[#E6DCB8] sticky top-0 z-40 shadow-sm">
@@ -57,9 +72,31 @@ export default function Header({
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Audio On/Off Toggle */}
             <button
-              onClick={onOpenChat}
+              onClick={handleToggleSound}
+              className="flex items-center gap-1 bg-white/10 hover:bg-white/20 text-amber-100 hover:text-white px-2.5 py-0.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-white/20"
+              title={isSoundOn ? 'Ses Efektlerini Kapat' : 'Ses Efektlerini Aç'}
+            >
+              {isSoundOn ? (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-amber-300" />
+                  <span className="hidden sm:inline">Ses: Açık</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-stone-400" />
+                  <span className="hidden sm:inline">Ses: Kapalı</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playClick();
+                onOpenChat();
+              }}
               className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-[#5C140E] px-3 py-0.5 rounded-md text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95 border border-amber-200"
               title="Sosyal Bilgiler Yapay Zekâ Öğretmeni"
             >
@@ -67,7 +104,10 @@ export default function Header({
               <span>YZ Öğretmene Sor</span>
             </button>
             <button
-              onClick={onOpenGlossary}
+              onClick={() => {
+                sounds.playClick();
+                onOpenGlossary();
+              }}
               className="flex items-center gap-1.5 text-amber-100 hover:text-white hover:underline transition-colors text-xs font-semibold cursor-pointer"
               title="Kavram Sözlüğü"
             >
@@ -76,7 +116,10 @@ export default function Header({
             </button>
             {session.isLoggedIn && (
               <button
-                onClick={onOpenReport}
+                onClick={() => {
+                  sounds.playCelebration();
+                  onOpenReport();
+                }}
                 className="flex items-center gap-1.5 bg-[#5C140E]/80 hover:bg-[#450E0A] text-amber-100 px-2.5 py-0.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-amber-500/30"
                 title="Çalışma Raporum"
               >
@@ -188,7 +231,7 @@ export default function Header({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full sm:w-auto">
             {/* Level 1 Tab - İznik Çinisi & Firuze */}
             <button
-              onClick={() => onSelectLevel(1)}
+              onClick={() => handleLevelClick(1)}
               className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 1
                   ? 'border-[#0D9488] bg-[#F0FDFA] text-[#134E4A] shadow-lg scale-105 ring-2 ring-[#0D9488]/30'
@@ -209,7 +252,7 @@ export default function Header({
 
             {/* Level 2 Tab - Anadolu Terracotta / Toprak & Kına */}
             <button
-              onClick={() => onSelectLevel(2)}
+              onClick={() => handleLevelClick(2)}
               className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 2
                   ? 'border-[#B45309] bg-[#FFFBEB] text-[#78350F] shadow-lg scale-105 ring-2 ring-[#B45309]/30'
@@ -230,7 +273,7 @@ export default function Header({
 
             {/* Level 3 Tab - Selçuklu Laciverti & Çini Mavisi */}
             <button
-              onClick={() => onSelectLevel(3)}
+              onClick={() => handleLevelClick(3)}
               className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 3
                   ? 'border-[#1E3A8A] bg-[#EFF6FF] text-[#1E3A8A] shadow-lg scale-105 ring-2 ring-[#1E3A8A]/30'
