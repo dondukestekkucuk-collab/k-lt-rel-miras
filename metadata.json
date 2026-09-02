@@ -1,0 +1,6 @@
+{
+  "name": "Kültürel Mirasımız ve Yaşayan Geçmiş",
+  "description": "Sosyal Bilgiler dersi için farklılaştırılmış eğitim yaklaşımıyla 3 seviyede interaktif öğrenme istasyonları ve sözlü tarih etkinlikleri.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
