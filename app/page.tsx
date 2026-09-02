@@ -21,7 +21,8 @@ import {
   Layers, 
   GraduationCap,
   FileText,
-  Bot
+  Bot,
+  RotateCcw
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -89,6 +90,22 @@ export default function HomePage() {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {}
+  };
+
+  // Reset all activities for a fresh repeatable attempt
+  const handleResetAllProgress = () => {
+    if (window.confirm('Tüm istasyon cevaplarını ve test sonuçlarını sıfırlayıp projeyi baştan çözmek istiyor musunuz?')) {
+      setSession(prev => ({
+        ...prev,
+        completedTasks: [],
+        quizScores: {},
+        oralHistoryAnswers: {},
+        projectAnswers: {},
+      }));
+      try {
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+      } catch {}
+    }
   };
 
   // Level 1 Task / Text Answers
@@ -224,13 +241,25 @@ export default function HomePage() {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsReportOpen(true)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-amber-500/30"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Sözlü Tarih & Çalışma Dosyası</span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                onClick={handleResetAllProgress}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border-2 border-stone-300 hover:border-stone-400 bg-white hover:bg-stone-50 text-stone-700 text-xs sm:text-sm font-bold px-4 py-3 rounded-2xl transition-all shadow-2xs active:scale-95 cursor-pointer shrink-0"
+                title="Tüm İstasyonları Baştan Çözmek İçin Sıfırla"
+              >
+                <RotateCcw className="w-4 h-4 text-[#9A3412]" />
+                <span>Tekrar Başla / Sıfırla</span>
+              </button>
+
+              <button
+                onClick={() => setIsReportOpen(true)}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-amber-500/30"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Sözlü Tarih & Çalışma Dosyası</span>
+              </button>
+            </div>
           </div>
         )}
 

@@ -18,7 +18,8 @@ import {
   Info,
   Building,
   Target,
-  Printer
+  Printer,
+  RotateCcw
 } from 'lucide-react';
 import { LEVEL_3_QUESTIONS } from '@/lib/learningData';
 import { StudentSession } from '@/lib/types';
@@ -70,7 +71,6 @@ export default function Level3Advanced({
   };
 
   const handleSelectQuizOption = (questionId: string, optionIdx: number) => {
-    if (submittedQuiz[questionId]) return;
     sounds.playClick();
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionIdx }));
   };
@@ -96,6 +96,37 @@ export default function Level3Advanced({
       } catch {}
     } else {
       sounds.playClick();
+    }
+  };
+
+  const handleRetryQuestion = (questionId: string) => {
+    sounds.playClick();
+    setSubmittedQuiz(prev => {
+      const updated = { ...prev };
+      delete updated[questionId];
+      return updated;
+    });
+  };
+
+  const handleResetAllQuiz = () => {
+    sounds.playClick();
+    if (window.confirm('Bu istasyondaki tüm analiz sorularını sıfırlayıp baştan çözmek istiyor musunuz?')) {
+      setSubmittedQuiz({});
+      setSelectedAnswers({});
+      sounds.playSuccess();
+    }
+  };
+
+  const handleResetProjects = () => {
+    sounds.playClick();
+    if (window.confirm('3 Dijital Miras Proje cevabınızı temizleyip yeniden fikir geliştirmek istiyor musunuz?')) {
+      setProject1('');
+      setProject2('');
+      setProject3('');
+      onUpdateProjectAnswer('l3-p1', '');
+      onUpdateProjectAnswer('l3-p2', '');
+      onUpdateProjectAnswer('l3-p3', '');
+      sounds.playSuccess();
     }
   };
 
@@ -408,18 +439,29 @@ export default function Level3Advanced({
 
         {/* 5. Öğretmen Kontrol Soruları */}
         <div className="bg-indigo-50/60 rounded-2xl border-2 border-indigo-200 p-5 sm:p-6 space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-indigo-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-200">
             <div>
               <h3 className="text-base sm:text-lg font-black text-indigo-950">
-                Seviye 3 Analitik Kontrol Soruları (2 Soru)
+                Seviye 3 Analiz & İnovasyon Testi (2 Soru)
               </h3>
               <p className="text-xs text-slate-600">
-                Kavramsal sentez ve problem çözme düzeyini test etmek için cevabını seç ve kontrol et
+                Analitik çıkarım yaparak doğru seçeneği işaretle ve &quot;Cevabımı Kontrol Et&quot;e tıkla. Dilediğin kadar tekrar çözebilirsin.
               </p>
             </div>
-            <span className="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-200">
-              İleri Analiz
-            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleResetAllQuiz}
+                className="text-xs font-bold text-indigo-800 bg-indigo-100 hover:bg-indigo-200 px-3 py-1.5 rounded-xl border border-indigo-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Tüm Test Sorularını Sıfırla"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Testi Baştan Çöz</span>
+              </button>
+              <span className="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-200">
+                İleri Analiz
+              </span>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -433,13 +475,26 @@ export default function Level3Advanced({
                   key={q.id}
                   className="border-2 border-indigo-100 rounded-2xl p-5 bg-white shadow-xs"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-indigo-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
-                      Soru {idx + 1}
-                    </span>
-                    <span className="text-[11px] text-slate-500 font-semibold">
-                      Analitik Odak: {q.conceptTag}
-                    </span>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-indigo-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
+                        Soru {idx + 1}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-semibold">
+                        Analitik Odak: {q.conceptTag}
+                      </span>
+                    </div>
+
+                    {isSubmitted && (
+                      <button
+                        type="button"
+                        onClick={() => handleRetryQuestion(q.id)}
+                        className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Soruyu Tekrar Çöz</span>
+                      </button>
+                    )}
                   </div>
 
                   <p className="text-xs sm:text-sm font-bold text-slate-900 mb-3.5 leading-relaxed">
@@ -491,18 +546,29 @@ export default function Level3Advanced({
                     <div className={`p-3.5 rounded-xl text-xs leading-relaxed border-2 ${
                       isCorrect ? 'bg-indigo-100 text-indigo-950 border-indigo-300' : 'bg-rose-100 text-rose-950 border-rose-300'
                     }`}>
-                      <div className="font-bold flex items-center gap-1.5 mb-1">
-                        {isCorrect ? (
-                          <>
-                            <CheckCircle2 className="w-4 h-4 text-indigo-700" />
-                            <span>Mükemmel Analiz! Doğru yanıt.</span>
-                          </>
-                        ) : (
-                          <>
-                            <Info className="w-4 h-4 text-rose-700" />
-                            <span>Doğru yanıt: {String.fromCharCode(65 + q.correctAnswer)} şıkkı.</span>
-                          </>
-                        )}
+                      <div className="font-bold flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          {isCorrect ? (
+                            <>
+                              <CheckCircle2 className="w-4 h-4 text-indigo-700" />
+                              <span>Mükemmel Analiz! Doğru yanıt.</span>
+                            </>
+                          ) : (
+                            <>
+                              <Info className="w-4 h-4 text-rose-700" />
+                              <span>Doğru yanıt: {String.fromCharCode(65 + q.correctAnswer)} şıkkı.</span>
+                            </>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRetryQuestion(q.id)}
+                          className="px-2.5 py-1 bg-white/80 hover:bg-white text-stone-800 font-bold rounded-lg text-[11px] border border-stone-300 transition-all cursor-pointer inline-flex items-center gap-1 shadow-2xs"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Tekrar Dene</span>
+                        </button>
                       </div>
                       <p className="mt-1 text-slate-800">
                         💡 <strong>Öğretmen Analiz Notu:</strong> {q.explanation}

@@ -19,7 +19,8 @@ import {
   Printer, 
   ChevronRight,
   Info,
-  Save
+  Save,
+  RotateCcw
 } from 'lucide-react';
 import { LEVEL_2_QUESTIONS } from '@/lib/learningData';
 import { StudentSession } from '@/lib/types';
@@ -155,7 +156,6 @@ export default function Level2Intermediate({
   };
 
   const handleSelectQuizOption = (questionId: string, optionIdx: number) => {
-    if (submittedQuiz[questionId]) return;
     sounds.playClick();
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionIdx }));
   };
@@ -181,6 +181,48 @@ export default function Level2Intermediate({
       } catch {}
     } else {
       sounds.playClick();
+    }
+  };
+
+  const handleRetryQuestion = (questionId: string) => {
+    sounds.playClick();
+    setSubmittedQuiz(prev => {
+      const updated = { ...prev };
+      delete updated[questionId];
+      return updated;
+    });
+  };
+
+  const handleResetAllQuiz = () => {
+    sounds.playClick();
+    if (window.confirm('Bu istasyondaki tüm test sorularını sıfırlayıp baştan çözmek istiyor musunuz?')) {
+      setSubmittedQuiz({});
+      setSelectedAnswers({});
+      sounds.playSuccess();
+    }
+  };
+
+  const handleResetInterviewForm = () => {
+    sounds.playClick();
+    if (window.confirm('Mülakat formunu temizleyip yeni bir aile büyüğüyle röportaj yapmak istiyor musunuz?')) {
+      setIntervieweeName('');
+      setIntervieweeAge('');
+      setIntervieweeRelation('');
+      setQ1('');
+      setQ2('');
+      setQ3('');
+      setQ4('');
+      setQ5('');
+      deleteRecording();
+      onUpdateOralHistory('interviewee_name', '');
+      onUpdateOralHistory('interviewee_age', '');
+      onUpdateOralHistory('interviewee_relation', '');
+      onUpdateOralHistory('l2-q1', '');
+      onUpdateOralHistory('l2-q2', '');
+      onUpdateOralHistory('l2-q3', '');
+      onUpdateOralHistory('l2-q4', '');
+      onUpdateOralHistory('l2-q5', '');
+      sounds.playSuccess();
     }
   };
 
@@ -548,18 +590,29 @@ export default function Level2Intermediate({
 
         {/* 4. Öğretmen Kontrol Soruları */}
         <div className="bg-sky-50/60 rounded-2xl border-2 border-sky-200 p-5 sm:p-6 space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-sky-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-sky-200">
             <div>
               <h3 className="text-base sm:text-lg font-black text-sky-950">
                 Seviye 2 Kontrol Soruları (2 Soru)
               </h3>
               <p className="text-xs text-slate-600">
-                Müfredat kazanımlarını pekiştirmek için doğru seçeneği işaretle ve &quot;Cevabımı Kontrol Et&quot;e tıkla
+                Müfredat kazanımlarını pekiştirmek için doğru seçeneği işaretle ve &quot;Cevabımı Kontrol Et&quot;e tıkla. Dilediğin kadar tekrar deneyebilirsin.
               </p>
             </div>
-            <span className="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-200">
-              Kavram Kontrolü
-            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleResetAllQuiz}
+                className="text-xs font-bold text-sky-800 bg-sky-100 hover:bg-sky-200 px-3 py-1.5 rounded-xl border border-sky-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Tüm Test Sorularını Sıfırla"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Testi Baştan Çöz</span>
+              </button>
+              <span className="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-200">
+                Kavram Kontrolü
+              </span>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -573,13 +626,26 @@ export default function Level2Intermediate({
                   key={q.id}
                   className="border-2 border-sky-100 rounded-2xl p-5 bg-white shadow-xs"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-sky-500 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
-                      Soru {idx + 1}
-                    </span>
-                    <span className="text-[11px] text-slate-500 font-semibold">
-                      Kazanım: {q.conceptTag}
-                    </span>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-sky-500 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
+                        Soru {idx + 1}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-semibold">
+                        Kazanım: {q.conceptTag}
+                      </span>
+                    </div>
+
+                    {isSubmitted && (
+                      <button
+                        type="button"
+                        onClick={() => handleRetryQuestion(q.id)}
+                        className="text-[11px] font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Soruyu Tekrar Çöz</span>
+                      </button>
+                    )}
                   </div>
 
                   <p className="text-xs sm:text-sm font-bold text-slate-900 mb-3.5 leading-relaxed">
@@ -605,8 +671,7 @@ export default function Level2Intermediate({
                           key={optIdx}
                           type="button"
                           onClick={() => handleSelectQuizOption(q.id, optIdx)}
-                          disabled={isSubmitted}
-                          className={`w-full text-left p-3 rounded-xl border-2 text-xs sm:text-sm transition-all flex items-start gap-2.5 cursor-pointer disabled:cursor-default ${optionStyle}`}
+                          className={`w-full text-left p-3 rounded-xl border-2 text-xs sm:text-sm transition-all flex items-start gap-2.5 cursor-pointer ${optionStyle}`}
                         >
                           <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-xs font-black shrink-0 mt-0.5">
                             {String.fromCharCode(65 + optIdx)}
@@ -631,18 +696,29 @@ export default function Level2Intermediate({
                     <div className={`p-3.5 rounded-xl text-xs leading-relaxed border-2 ${
                       isCorrect ? 'bg-sky-100 text-sky-950 border-sky-300' : 'bg-rose-100 text-rose-950 border-rose-300'
                     }`}>
-                      <div className="font-bold flex items-center gap-1.5 mb-1">
-                        {isCorrect ? (
-                          <>
-                            <CheckCircle2 className="w-4 h-4 text-sky-700" />
-                            <span>Tebrikler! Doğru cevapladın.</span>
-                          </>
-                        ) : (
-                          <>
-                            <Info className="w-4 h-4 text-rose-700" />
-                            <span>Doğru seçenek: {String.fromCharCode(65 + q.correctAnswer)} şıkkı.</span>
-                          </>
-                        )}
+                      <div className="font-bold flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          {isCorrect ? (
+                            <>
+                              <CheckCircle2 className="w-4 h-4 text-sky-700" />
+                              <span>Tebrikler! Doğru cevapladın.</span>
+                            </>
+                          ) : (
+                            <>
+                              <Info className="w-4 h-4 text-rose-700" />
+                              <span>Doğru seçenek: {String.fromCharCode(65 + q.correctAnswer)} şıkkı.</span>
+                            </>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRetryQuestion(q.id)}
+                          className="px-2.5 py-1 bg-white/80 hover:bg-white text-stone-800 font-bold rounded-lg text-[11px] border border-stone-300 transition-all cursor-pointer inline-flex items-center gap-1 shadow-2xs"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Tekrar Dene</span>
+                        </button>
                       </div>
                       <p className="mt-1 text-slate-800">
                         💡 <strong>Öğretmen Değerlendirmesi:</strong> {q.explanation}
