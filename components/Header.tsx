@@ -39,7 +39,7 @@ export default function Header({
   onOpenChat,
 }: HeaderProps) {
   const [inputName, setInputName] = useState('');
-  const [selectedGrade, setSelectedGrade] = useState('6. Sınıf');
+  const selectedGrade = '5. Sınıf';
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -56,34 +56,34 @@ export default function Header({
   const completedCount = session.completedTasks.length;
 
   return (
-    <header className="bg-white border-b-2 border-orange-200 sticky top-0 z-40 shadow-xs">
-      {/* Top Banner / MEB Sosyal Bilgiler Maarif Modeli Badge */}
-      <div className="bg-orange-600 text-white px-4 py-1.5 text-xs sm:text-sm font-medium shadow-xs">
+    <header className="bg-[#FAF7F2] border-b-2 border-[#E6DCB8] sticky top-0 z-40 shadow-sm">
+      {/* Top Banner / MEB Sosyal Bilgiler Maarif Modeli Badge - Anatolian Crimson & Gold */}
+      <div className="bg-gradient-to-r from-[#741D15] via-[#8C291E] to-[#5C140E] text-white px-4 py-1.5 text-xs sm:text-sm font-medium shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="bg-orange-700/90 px-2.5 py-0.5 rounded-md text-[11px] font-bold tracking-wide border border-orange-400/40">
+            <span className="bg-[#5C140E]/80 text-[#FDE68A] px-2.5 py-0.5 rounded-md text-[11px] font-bold tracking-wide border border-[#F59E0B]/40">
               MEB SOSYAL BİLGİLER
             </span>
-            <span className="hidden sm:inline text-orange-100 font-medium">
-              Türkiye Yüzyılı Maarif Modeli • Farklılaştırılmış Öğrenme İstasyonları
+            <span className="hidden sm:inline text-amber-100 font-medium">
+              Türkiye Yüzyılı Maarif Modeli • 5. Sınıf Kültürel Mirasımız ve Yaşayan Geçmiş
             </span>
-            <span className="sm:hidden text-orange-100 font-medium">
-              Kültürel Mirasımız & Yaşayan Geçmiş
+            <span className="sm:hidden text-amber-100 font-medium">
+              5. Sınıf Kültürel Mirasımız
             </span>
           </div>
 
           <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               onClick={onOpenChat}
-              className="flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-amber-950 px-2.5 py-0.5 rounded-md text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-[#5C140E] px-3 py-0.5 rounded-md text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95 border border-amber-200"
               title="Sosyal Bilgiler Yapay Zekâ Öğretmeni"
             >
-              <Bot className="w-3.5 h-3.5 text-amber-950" />
+              <Bot className="w-3.5 h-3.5 text-[#5C140E]" />
               <span>YZ Öğretmene Sor</span>
             </button>
             <button
               onClick={onOpenGlossary}
-              className="flex items-center gap-1.5 text-orange-100 hover:text-white hover:underline transition-colors text-xs font-semibold cursor-pointer"
+              className="flex items-center gap-1.5 text-amber-100 hover:text-white hover:underline transition-colors text-xs font-semibold cursor-pointer"
               title="Kavram Sözlüğü"
             >
               <BookOpen className="w-3.5 h-3.5" />
@@ -92,7 +92,7 @@ export default function Header({
             {session.isLoggedIn && (
               <button
                 onClick={onOpenReport}
-                className="flex items-center gap-1.5 bg-orange-700/80 hover:bg-orange-800 text-white px-2.5 py-0.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-orange-400/40"
+                className="flex items-center gap-1.5 bg-[#5C140E]/80 hover:bg-[#450E0A] text-amber-100 px-2.5 py-0.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-amber-500/30"
                 title="Çalışma Raporum"
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -109,20 +109,20 @@ export default function Header({
           
           {/* Logo & Main Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md shrink-0">
-              M
+            <div className="w-11 h-11 bg-gradient-to-br from-[#8C291E] to-[#B45309] rounded-2xl flex items-center justify-center text-[#FEF3C7] font-black text-xl shadow-md border border-[#FDE68A]/40 shrink-0">
+              🏛️
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <h1 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight">
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-black text-[#451A03] tracking-tight">
                   Miras Gezgini
                 </h1>
-                <span className="text-orange-500 font-bold text-xs sm:text-sm bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
-                  Sosyal Bilgiler
+                <span className="text-[#9A3412] font-bold text-xs bg-[#FEF3C7] px-2.5 py-0.5 rounded-md border border-[#FDE68A]">
+                  5. Sınıf Sosyal Bilgiler
                 </span>
               </div>
-              <p className="text-xs text-slate-500 font-medium">
-                Kültürel Mirasımız ve Yaşayan Geçmiş • 3 Kademeli Öğrenme İstasyonu
+              <p className="text-xs text-stone-600 font-medium">
+                Anadolu Kültürel Mirası ve Yaşayan Geçmiş • 3 Kademeli Öğrenme İstasyonu
               </p>
             </div>
           </div>
@@ -137,17 +137,10 @@ export default function Header({
               >
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
-                    <select
-                      value={selectedGrade}
-                      onChange={(e) => setSelectedGrade(e.target.value)}
-                      className="text-xs bg-orange-50/70 border-2 border-orange-100 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-hidden focus:border-orange-400 font-semibold cursor-pointer"
-                      aria-label="Sınıf Seviyesi Seçiniz"
-                    >
-                      <option value="5. Sınıf">5. Sınıf</option>
-                      <option value="6. Sınıf">6. Sınıf</option>
-                      <option value="7. Sınıf">7. Sınıf</option>
-                      <option value="8. Sınıf">8. Sınıf</option>
-                    </select>
+                    <span className="text-xs bg-[#FEF3C7] border-2 border-[#FDE68A] text-[#78350F] font-bold rounded-xl px-3 py-1.5 shrink-0 flex items-center gap-1.5 shadow-2xs">
+                      <GraduationCap className="w-3.5 h-3.5 text-[#B45309]" />
+                      5. Sınıf
+                    </span>
 
                     <input
                       id="student-username-input"
@@ -158,20 +151,20 @@ export default function Header({
                         setInputName(e.target.value);
                         if (errorMsg) setErrorMsg('');
                       }}
-                      className="text-sm px-3 py-1.5 border-2 border-orange-100 rounded-lg outline-none focus:border-orange-400 transition-colors text-slate-800 placeholder-slate-400 w-40 sm:w-48 bg-white"
+                      className="text-sm px-3.5 py-1.5 border-2 border-[#E6DCB8] rounded-xl outline-none focus:border-[#B45309] transition-colors text-stone-800 placeholder-stone-400 w-40 sm:w-48 bg-white shadow-2xs"
                     />
 
                     <button
                       type="submit"
                       id="login-button"
-                      className="px-5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg text-sm transition-all shadow-md active:scale-95 cursor-pointer inline-flex items-center gap-1.5"
+                      className="px-5 py-1.5 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white font-bold rounded-xl text-sm transition-all shadow-md active:scale-95 cursor-pointer inline-flex items-center gap-1.5 border border-amber-600/30"
                     >
                       <LogIn className="w-4 h-4" />
                       <span>Giriş Yap</span>
                     </button>
                   </div>
                   {errorMsg && (
-                    <span className="text-[11px] text-rose-600 mt-1 font-semibold">
+                    <span className="text-[11px] text-rose-700 mt-1 font-bold">
                       {errorMsg}
                     </span>
                   )}
@@ -179,25 +172,25 @@ export default function Header({
               </form>
             ) : (
               /* LOGGED IN: Welcome Banner, Progress, Logout Button */
-              <div className="flex items-center gap-3 sm:gap-4 bg-orange-50 border-2 border-orange-200 rounded-2xl px-4 py-2 shadow-xs">
-                <div className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+              <div className="flex items-center gap-3 sm:gap-4 bg-[#FFFBEB] border-2 border-[#FDE68A] rounded-2xl px-4 py-2 shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C291E] to-[#B45309] text-amber-100 flex items-center justify-center font-black text-sm shadow-xs shrink-0 border border-amber-300/40">
                   {session.username.charAt(0).toUpperCase()}
                 </div>
                 
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-slate-500 font-medium">Hoş geldin,</span>
-                    <span className="text-sm font-black text-orange-600">
+                    <span className="text-xs text-stone-500 font-medium">Hoş geldin,</span>
+                    <span className="text-sm font-black text-[#78350F]">
                       {session.username}
                     </span>
-                    <span className="text-[10px] bg-orange-200 text-orange-900 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] font-bold px-2 py-0.5 rounded-full border border-amber-300">
                       {session.grade}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-[11px] text-slate-600">
-                    <span className="flex items-center gap-1 font-semibold text-orange-900">
-                      <Award className="w-3.5 h-3.5 text-orange-600" />
+                  <div className="flex items-center gap-2 text-[11px] text-stone-600">
+                    <span className="flex items-center gap-1 font-bold text-[#9A3412]">
+                      <Award className="w-3.5 h-3.5 text-[#B45309]" />
                       {completedCount} Görev Tamamlandı
                     </span>
                   </div>
@@ -208,11 +201,11 @@ export default function Header({
                   type="button"
                   id="logout-button"
                   onClick={onLogout}
-                  className="px-4 py-1.5 border-2 border-orange-500 text-orange-600 hover:bg-orange-100/70 font-semibold rounded-lg text-xs transition-all cursor-pointer ml-1 inline-flex items-center gap-1"
+                  className="px-3 py-1.5 border-2 border-[#B45309] text-[#9A3412] hover:bg-[#FEF3C7] font-bold rounded-xl text-xs transition-all cursor-pointer ml-1 inline-flex items-center gap-1"
                   title="Oturumu Kapat"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Çıkış Yap</span>
+                  <span>Çıkış</span>
                 </button>
               </div>
             )}
@@ -220,75 +213,75 @@ export default function Header({
 
         </div>
 
-        {/* Level Navigation Tabs (Vibrant Theme: Seviye 1 Emerald, Seviye 2 Sky, Seviye 3 Indigo) */}
-        <div className="mt-5 pt-3 border-t border-orange-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-slate-600 font-bold uppercase tracking-wider">
-            <Layers className="w-4 h-4 text-orange-600" />
+        {/* Level Navigation Tabs (Kültürel Miras Paleti: Seviye 1 İznik Firuzesi, Seviye 2 Anadolu Toprak/Terracotta, Seviye 3 Selçuklu Laciverti) */}
+        <div className="mt-5 pt-3 border-t border-[#E6DCB8] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-1.5 text-xs text-stone-700 font-bold uppercase tracking-wider">
+            <Layers className="w-4 h-4 text-[#9A3412]" />
             <span>Öğrenme İstasyonu Seçimi:</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full sm:w-auto">
-            {/* Level 1 Tab */}
+            {/* Level 1 Tab - İznik Çinisi & Firuze */}
             <button
               onClick={() => onSelectLevel(1)}
-              className={`flex-1 min-w-[200px] p-3 sm:p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
+              className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 1
-                  ? 'border-emerald-400 bg-emerald-50 text-emerald-900 shadow-lg scale-105'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/40'
+                  ? 'border-[#0D9488] bg-[#F0FDFA] text-[#134E4A] shadow-lg scale-105 ring-2 ring-[#0D9488]/30'
+                  : 'border-[#E6DCB8] bg-white text-stone-700 hover:border-[#0D9488]/60 hover:bg-[#F0FDFA]/50'
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xl">🌱</span>
-                <span className="font-black uppercase tracking-wider text-[11px] text-emerald-700">
+                <span className="text-xl">🕌</span>
+                <span className="font-black uppercase tracking-wider text-[11px] text-[#0F766E]">
                   Seviye 1
                 </span>
               </div>
               <div className="font-bold text-sm sm:text-base leading-tight">
                 Temel: Keşif İstasyonu
               </div>
-              <div className="text-[11px] opacity-75 mt-0.5">Görsel & Somut Miras</div>
+              <div className="text-[11px] text-[#115E59] font-medium mt-0.5">Görsel & Somut Miras</div>
             </button>
 
-            {/* Level 2 Tab */}
+            {/* Level 2 Tab - Anadolu Terracotta / Toprak & Kına */}
             <button
               onClick={() => onSelectLevel(2)}
-              className={`flex-1 min-w-[200px] p-3 sm:p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
+              className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 2
-                  ? 'border-sky-400 bg-sky-50 text-sky-900 shadow-lg scale-105'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:bg-sky-50/40'
+                  ? 'border-[#B45309] bg-[#FFFBEB] text-[#78350F] shadow-lg scale-105 ring-2 ring-[#B45309]/30'
+                  : 'border-[#E6DCB8] bg-white text-stone-700 hover:border-[#B45309]/60 hover:bg-[#FFFBEB]/50'
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xl">📚</span>
-                <span className="font-black uppercase tracking-wider text-[11px] text-sky-700">
+                <span className="text-xl">📜</span>
+                <span className="font-black uppercase tracking-wider text-[11px] text-[#9A3412]">
                   Seviye 2
                 </span>
               </div>
               <div className="font-bold text-sm sm:text-base leading-tight">
                 Orta: Sözlü Tarih
               </div>
-              <div className="text-[11px] opacity-75 mt-0.5">Sözel Miras & Kuşaklar Köprüsü</div>
+              <div className="text-[11px] text-[#92400E] font-medium mt-0.5">Sözel Miras & Kuşaklar Köprüsü</div>
             </button>
 
-            {/* Level 3 Tab */}
+            {/* Level 3 Tab - Selçuklu Laciverti & Çini Mavisi */}
             <button
               onClick={() => onSelectLevel(3)}
-              className={`flex-1 min-w-[200px] p-3 sm:p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
+              className={`flex-1 min-w-[200px] p-3.5 rounded-2xl border-4 text-left transition-all cursor-pointer ${
                 activeLevel === 3
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-900 shadow-lg scale-105'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/40'
+                  ? 'border-[#1E3A8A] bg-[#EFF6FF] text-[#1E3A8A] shadow-lg scale-105 ring-2 ring-[#1E3A8A]/30'
+                  : 'border-[#E6DCB8] bg-white text-stone-700 hover:border-[#1E3A8A]/60 hover:bg-[#EFF6FF]/50'
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xl">🧪</span>
-                <span className="font-black uppercase tracking-wider text-[11px] text-indigo-700">
+                <span className="text-xl">🏺</span>
+                <span className="font-black uppercase tracking-wider text-[11px] text-[#1D4ED8]">
                   Seviye 3
                 </span>
               </div>
               <div className="font-bold text-sm sm:text-base leading-tight">
                 İleri: Analiz Laboratuvarı
               </div>
-              <div className="text-[11px] opacity-75 mt-0.5">Dijital Miras & İnovasyon</div>
+              <div className="text-[11px] text-[#1E40AF] font-medium mt-0.5">Dijital Miras & İnovasyon</div>
             </button>
           </div>
         </div>

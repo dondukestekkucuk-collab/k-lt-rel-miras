@@ -110,71 +110,71 @@ export default function Level2Intermediate({
     <div className="space-y-8 animate-in fade-in duration-300">
       
       {/* Outer Main Container */}
-      <div className="bg-white rounded-3xl border-4 border-sky-400 p-6 sm:p-8 shadow-sm space-y-8">
+      <div className="bg-white rounded-3xl border-4 border-[#B45309] p-6 sm:p-8 shadow-sm space-y-8">
 
         {/* 1. Header Hero Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           <div className="lg:col-span-7 space-y-4">
-            <div className="bg-sky-50 p-6 rounded-2xl border-2 border-sky-100">
-              <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-sky-700 bg-sky-100/80 px-2.5 py-1 rounded-full mb-2">
-                <BookOpen className="w-3.5 h-3.5 text-sky-600" />
+            <div className="bg-[#FFFBEB] p-6 rounded-2xl border-2 border-[#FDE68A]">
+              <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#9A3412] bg-[#FEF3C7] px-2.5 py-1 rounded-full mb-2 border border-[#FDE68A]">
+                <BookOpen className="w-3.5 h-3.5 text-[#B45309]" />
                 Seviye 2: Sözel ve Anlatı İstasyonu
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-sky-900 mb-2 uppercase tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#451A03] mb-2 uppercase tracking-tight">
                 Kuşaklar Arası Köprü: Yaşayan Bellek
               </h2>
-              <p className="text-sm sm:text-base leading-relaxed text-sky-800 font-medium">
+              <p className="text-sm sm:text-base leading-relaxed text-[#78350F] font-medium">
                 Sevgili öğrencim! Kültürümüz yalnızca binalarda değil; büyüklerimizin anlattığı hatıralarda, bayramlaşmalarda, imece usulü dayanışmada ve mutfak kokularında yaşar. Sözlü tarih yöntemiyle geçmişin canlı şahitlerini dinlemeye hazır mısın?
               </p>
             </div>
 
             {/* 3 Step Guide */}
             <div className="space-y-3">
-              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-sky-100">
-                <div className="w-9 h-9 rounded-full bg-sky-500 flex items-center justify-center text-white font-black italic shrink-0 shadow-xs">
+              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-[#FDE68A]">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8C291E] to-[#B45309] flex items-center justify-center text-amber-100 font-black italic shrink-0 shadow-xs">
                   1
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm font-bold text-sky-950">Görüşme Öncesi Hazırlık</p>
-                  <p className="text-xs text-slate-600">Görüşülecek kişiyi belirle, randevu al ve sorularını önceden hazırla.</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#451A03]">Görüşme Öncesi Hazırlık</p>
+                  <p className="text-xs text-stone-600">Görüşülecek kişiyi belirle, randevu al ve sorularını önceden hazırla.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-sky-100">
-                <div className="w-9 h-9 rounded-full bg-sky-500 flex items-center justify-center text-white font-black italic shrink-0 shadow-xs">
+              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-[#FDE68A]">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8C291E] to-[#B45309] flex items-center justify-center text-amber-100 font-black italic shrink-0 shadow-xs">
                   2
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm font-bold text-sky-950">Görüşme ve Kayıt</p>
-                  <p className="text-xs text-slate-600">Nezaketle dinle, sözünü kesme, izin alarak ses veya not kaydı al.</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#451A03]">Görüşme ve Kayıt</p>
+                  <p className="text-xs text-stone-600">Nezaketle dinle, sözünü kesme, izin alarak ses veya not kaydı al.</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-sky-100">
-                <div className="w-9 h-9 rounded-full bg-sky-500 flex items-center justify-center text-white font-black italic shrink-0 shadow-xs">
+              <div className="flex items-center gap-3.5 bg-white p-3.5 rounded-2xl shadow-xs border-2 border-[#FDE68A]">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8C291E] to-[#B45309] flex items-center justify-center text-amber-100 font-black italic shrink-0 shadow-xs">
                   3
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm font-bold text-sky-950">Raporlaştırma ve Arşiv</p>
-                  <p className="text-xs text-slate-600">Toplanan bilgileri düzenle, kültürel mirası aile arşivine kazandır.</p>
+                  <p className="text-xs sm:text-sm font-bold text-[#451A03]">Raporlaştırma ve Arşiv</p>
+                  <p className="text-xs text-stone-600">Toplanan bilgileri düzenle, kültürel mirası aile arşivine kazandır.</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right Highlight Box */}
-          <div className="lg:col-span-5 bg-sky-500 rounded-3xl p-6 text-white shadow-md flex flex-col justify-between h-full">
+          <div className="lg:col-span-5 bg-gradient-to-br from-[#8C291E] to-[#B45309] rounded-3xl p-6 text-white shadow-md flex flex-col justify-between h-full border border-amber-300/30">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="w-6 h-6 text-sky-100" />
+                <FileText className="w-6 h-6 text-amber-200" />
                 <h3 className="font-black text-lg sm:text-xl tracking-tight">Sözlü Tarih Kazanımları</h3>
               </div>
-              <p className="text-xs text-sky-100 mb-4 leading-relaxed font-normal">
+              <p className="text-xs text-amber-100 mb-4 leading-relaxed font-normal">
                 Bir tarih araştırmacısı gibi sahadan canlı verileri topla ve kaydet:
               </p>
 
               <ul className="space-y-3.5">
-                <li className="flex items-start gap-3 bg-sky-600/70 p-3 rounded-2xl border border-sky-400/40">
+                <li className="flex items-start gap-3 bg-[#5C140E]/60 p-3 rounded-2xl border border-amber-400/30">
                   <span className="text-2xl">👴</span>
                   <div>
                     <p className="font-bold text-xs sm:text-sm text-white">Canlı Tarih Mülakatı</p>

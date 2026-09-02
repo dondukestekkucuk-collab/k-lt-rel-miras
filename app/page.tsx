@@ -28,7 +28,7 @@ const STORAGE_KEY = 'sosyal_bilgiler_ogrenci_oturum_v1';
 
 const defaultSession: StudentSession = {
   username: '',
-  grade: '6. Sınıf',
+  grade: '5. Sınıf',
   isLoggedIn: false,
   loginTime: '',
   completedTasks: [],
@@ -159,7 +159,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-orange-50/60 font-sans text-slate-800">
+    <div className="min-h-screen flex flex-col bg-[#FAF7F2] font-sans text-stone-800">
       
       {/* Header with Student Login & Level Navigation */}
       <Header
@@ -211,16 +211,16 @@ export default function HomePage() {
 
         {/* Floating Quick Action / Report Access for logged-in students */}
         {session.isLoggedIn && (
-          <div className="bg-white border-4 border-amber-400 p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div className="bg-[#FFFDF9] border-3 border-[#B45309] p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-white shrink-0 shadow-md">
-                <Award className="w-7 h-7 text-amber-100" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#8C291E] to-[#B45309] flex items-center justify-center text-amber-100 shrink-0 shadow-md border border-amber-300/30">
+                <Award className="w-7 h-7 text-amber-200" />
               </div>
               <div>
-                <h4 className="font-black text-base sm:text-lg text-amber-950">
+                <h4 className="font-black text-base sm:text-lg text-[#451A03]">
                   {session.username}, İstasyon Çalışman Harika İlerliyor!
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                <p className="text-xs sm:text-sm text-stone-600 font-medium">
                   Toplam {session.completedTasks.length} adet görev ve test tamamladın. Çalışmanı resmi bir dosya ve sertifika olarak görüntüleyebilirsin.
                 </p>
               </div>
@@ -228,7 +228,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setIsReportOpen(true)}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer shrink-0"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#9A3412] to-[#B45309] hover:from-[#7C2D12] hover:to-[#92400E] text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-amber-500/30"
             >
               <FileText className="w-4 h-4" />
               <span>Sözlü Tarih & Çalışma Dosyası</span>
@@ -238,37 +238,37 @@ export default function HomePage() {
 
       </main>
 
-      {/* Floating AI Teacher Chat Launcher Button */}
+      {/* Floating AI Teacher Chat Launcher Button - Ottoman Crimson & Gold */}
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setIsChatOpen(true)}
-          className="flex items-center gap-2.5 bg-orange-600 hover:bg-orange-500 text-white px-5 py-3.5 rounded-full font-black text-sm shadow-xl hover:shadow-2xl border-2 border-orange-300 transition-all cursor-pointer hover:scale-105 active:scale-95 group"
+          className="flex items-center gap-2.5 bg-gradient-to-r from-[#741D15] via-[#8C291E] to-[#9A3412] hover:from-[#5C140E] hover:to-[#7C2D12] text-amber-100 px-5 py-3.5 rounded-full font-black text-sm shadow-xl hover:shadow-2xl border-2 border-amber-400/50 transition-all cursor-pointer hover:scale-105 active:scale-95 group"
           title="Sosyal Bilgiler Yapay Zekâ Öğretmenine Soru Sor"
         >
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:rotate-12 transition-transform">
+          <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-amber-200 group-hover:rotate-12 transition-transform">
             <Bot className="w-4 h-4" />
           </div>
-          <span>Öğretmene Sor</span>
-          <span className="bg-amber-300 text-orange-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+          <span className="text-white font-bold">Öğretmene Sor</span>
+          <span className="bg-gradient-to-r from-amber-400 to-amber-300 text-[#5C140E] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-200">
             YZ
           </span>
         </button>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 text-xs py-8 mt-12 border-t-4 border-amber-400">
+      {/* Footer - Seljuk / Anatolian Motif Dark Bronze */}
+      <footer className="bg-[#1C1917] text-stone-400 text-xs py-8 mt-12 border-t-4 border-[#B45309]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white font-bold text-sm">
-            <GraduationCap className="w-5 h-5 text-amber-400" />
-            <span>Sosyal Bilgiler Dersi Öğretim Portalı</span>
+          <div className="flex items-center gap-2 text-amber-100 font-bold text-sm">
+            <GraduationCap className="w-5 h-5 text-[#F59E0B]" />
+            <span>5. Sınıf Sosyal Bilgiler Kültürel Miras Portalı</span>
           </div>
 
-          <div className="text-center sm:text-right text-slate-400 space-y-1">
-            <p className="text-slate-300 font-medium">
+          <div className="text-center sm:text-right text-stone-400 space-y-1">
+            <p className="text-stone-300 font-medium">
               T.C. Millî Eğitim Bakanlığı • Türkiye Yüzyılı Maarif Modeli Sosyal Bilgiler Öğretim Programı Uyumlu
             </p>
-            <p className="text-[11px] text-slate-400">
-              Kültürel Mirasımız ve Yaşayan Geçmiş: Somut & Somut Olmayan Kültürel Miras • Sözlü Tarih Yöntemi
+            <p className="text-[11px] text-stone-400">
+              Kültürel Mirasımız ve Yaşayan Geçmiş: Somut & Somut Olmayan Miras • Sözlü Tarih ve Etnografya Yöntemi
             </p>
           </div>
         </div>
