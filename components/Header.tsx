@@ -15,7 +15,8 @@ import {
   MessageSquareQuote,
   Bot,
   Volume2,
-  VolumeX
+  VolumeX,
+  RotateCcw
 } from 'lucide-react';
 import { StudentSession } from '@/lib/types';
 import { sounds } from '@/lib/audio';
@@ -24,6 +25,7 @@ interface HeaderProps {
   session: StudentSession;
   onOpenAuthModal: (mode: 'login' | 'register') => void;
   onLogout: () => void;
+  onClearAllProgress?: () => void;
   activeLevel: 1 | 2 | 3;
   onSelectLevel: (level: 1 | 2 | 3) => void;
   onOpenGlossary: () => void;
@@ -35,6 +37,7 @@ export default function Header({
   session,
   onOpenAuthModal,
   onLogout,
+  onClearAllProgress,
   activeLevel,
   onSelectLevel,
   onOpenGlossary,
@@ -114,6 +117,19 @@ export default function Header({
               <BookOpen className="w-3.5 h-3.5" />
               <span>Kavram Sözlüğü</span>
             </button>
+            {onClearAllProgress && (
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  onClearAllProgress();
+                }}
+                className="flex items-center gap-1 text-amber-200 hover:text-white hover:underline transition-colors text-xs font-semibold cursor-pointer"
+                title="Tüm Yanıtları Temizle ve Sıfırdan Başla"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-amber-300" />
+                <span>Cevapları Sıfırla</span>
+              </button>
+            )}
             {session.isLoggedIn && (
               <button
                 onClick={() => {

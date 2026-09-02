@@ -59,6 +59,22 @@ export default function Level2Intermediate({
 
   const [savedSuccessMsg, setSavedSuccessMsg] = useState('');
 
+  // Synchronize with session when reset or changed
+  useEffect(() => {
+    setIntervieweeName(session.oralHistoryAnswers['interviewee_name'] || '');
+    setIntervieweeAge(session.oralHistoryAnswers['interviewee_age'] || '');
+    setIntervieweeRelation(session.oralHistoryAnswers['interviewee_relation'] || '');
+    setQ1(session.oralHistoryAnswers['l2-q1'] || '');
+    setQ2(session.oralHistoryAnswers['l2-q2'] || '');
+    setQ3(session.oralHistoryAnswers['l2-q3'] || '');
+    setQ4(session.oralHistoryAnswers['l2-q4'] || '');
+    setQ5(session.oralHistoryAnswers['l2-q5'] || '');
+    if (Object.keys(session.quizScores || {}).length === 0) {
+      setSubmittedQuiz({});
+      setSelectedAnswers({});
+    }
+  }, [session.oralHistoryAnswers, session.quizScores]);
+
   // Audio Recording State
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);

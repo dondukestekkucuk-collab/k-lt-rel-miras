@@ -95,14 +95,16 @@ export default function HomePage() {
   // Reset all activities for a fresh repeatable attempt
   const handleResetAllProgress = () => {
     if (window.confirm('Tüm istasyon cevaplarını ve test sonuçlarını sıfırlayıp projeyi baştan çözmek istiyor musunuz?')) {
-      setSession(prev => ({
-        ...prev,
+      const resetSession: StudentSession = {
+        ...session,
         completedTasks: [],
         quizScores: {},
         oralHistoryAnswers: {},
         projectAnswers: {},
-      }));
+      };
+      setSession(resetSession);
       try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(resetSession));
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
       } catch {}
     }
@@ -181,6 +183,7 @@ export default function HomePage() {
         session={session}
         onOpenAuthModal={handleOpenAuth}
         onLogout={handleLogout}
+        onClearAllProgress={handleResetAllProgress}
         activeLevel={activeLevel}
         onSelectLevel={setActiveLevel}
         onOpenGlossary={() => setIsGlossaryOpen(true)}

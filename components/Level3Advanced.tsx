@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Compass, 
   Globe2, 
@@ -49,6 +49,17 @@ export default function Level3Advanced({
   const [project1, setProject1] = useState(session.projectAnswers['l3-p1'] || '');
   const [project2, setProject2] = useState(session.projectAnswers['l3-p2'] || '');
   const [project3, setProject3] = useState(session.projectAnswers['l3-p3'] || '');
+
+  // Synchronize with session when reset or changed
+  useEffect(() => {
+    setProject1(session.projectAnswers['l3-p1'] || '');
+    setProject2(session.projectAnswers['l3-p2'] || '');
+    setProject3(session.projectAnswers['l3-p3'] || '');
+    if (Object.keys(session.quizScores || {}).length === 0) {
+      setSubmittedQuiz({});
+      setSelectedAnswers({});
+    }
+  }, [session.projectAnswers, session.quizScores]);
 
   const handleSaveProject = (projectId: string, text: string) => {
     sounds.playClick();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Eye, 
   Sparkles, 
@@ -45,6 +45,17 @@ export default function Level1Basic({
   const [task1Answer, setTask1Answer] = useState(session.oralHistoryAnswers['l1-task1'] || '');
   const [task2Answer, setTask2Answer] = useState(session.oralHistoryAnswers['l1-task2'] || '');
   const [task3Answer, setTask3Answer] = useState(session.oralHistoryAnswers['l1-task3'] || '');
+
+  // Synchronize with session when reset or changed
+  useEffect(() => {
+    setTask1Answer(session.oralHistoryAnswers['l1-task1'] || '');
+    setTask2Answer(session.oralHistoryAnswers['l1-task2'] || '');
+    setTask3Answer(session.oralHistoryAnswers['l1-task3'] || '');
+    if (Object.keys(session.quizScores || {}).length === 0) {
+      setSubmittedQuiz({});
+      setSelectedAnswers({});
+    }
+  }, [session.oralHistoryAnswers, session.quizScores]);
 
   const handleSaveTask = (taskId: string, text: string) => {
     sounds.playClick();
